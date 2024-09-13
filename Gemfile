@@ -47,4 +47,8 @@ end
 
 gem 'devise'
 gem 'devise-jwt'
+gem 'faker'
 
+
+gem "searchkick", "~> 5.4"
+gem "elasticsearch", "~> 8.15"

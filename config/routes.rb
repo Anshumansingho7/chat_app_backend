@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   resources :chatrooms, only: [:create, :index] do
     resources :messages, only: [:create]
   end
+
+  get '/search', to: 'search#search'
 end
