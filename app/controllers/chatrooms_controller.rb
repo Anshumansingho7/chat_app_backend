@@ -38,11 +38,13 @@ class ChatroomsController < ApplicationController
       messages = existing_chatroom.messages.select(:id, :user_id, :chatroom_id, :content)
       other_user = existing_chatroom.exclude_current_user(current_user).first
       render json: {
-        chatroom_id: existing_chatroom.id,
-        other_user: {
-          id: other_user.id,
-          username: other_user.username,
-          email: other_user.email
+        chatroom: {
+          chatroom_id: existing_chatroom.id,
+          other_user: {
+            id: other_user.id,
+            username: other_user.username,
+            email: other_user.email
+          }
         },
         messages: messages.as_json(only: [:id, :user_id, :chatroom_id, :content])
       }
@@ -52,11 +54,13 @@ class ChatroomsController < ApplicationController
       if chatroom.save
         chatroom.users << [current_user, other_user]
         render json: {
-          chatroom_id: chatroom.id,
-          other_user: {
-            id: other_user.id,
-            username: other_user.username,
-            email: other_user.email
+          chatroom: {
+            chatroom_id: chatroom.id,
+            other_user: {
+              id: other_user.id,
+              username: other_user.username,
+              email: other_user.email
+            }
           },
           messages: []
         }, status: :created

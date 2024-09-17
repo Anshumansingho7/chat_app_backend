@@ -4,11 +4,21 @@ class SearchController < ApplicationController
   def search
     if params[:search].present?
       users = User.search(params[:search], fields: [:username])
-      render json: users.results
+      formatted_users = users.results.map do |user|
+        {
+          chatroom_id: nil,
+          other_user: {
+            id: user.id,
+            username: user.username,
+            email: user.email
+          }
+        }
+      end
+      render json: formatted_users
     else
       render json: { error: "Search term is missing" }, status: :bad_request
     end
-  end 
+  end  
 
   def current_user
     user = get_current_user_from_token
