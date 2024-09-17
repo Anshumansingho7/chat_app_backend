@@ -7,3 +7,20 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+require 'faker'
+
+n = 0
+1500.times do
+  User.create!(
+    email: Faker::Internet.unique.email,
+    username: Faker::Internet.unique.username,
+    password: 'password', # Dummy password
+    password_confirmation: 'password',
+    jti: SecureRandom.uuid
+  )
+  n += 1
+  puts "#{n}"  # String interpolation for proper output
+end
+
+puts "1500 users created!"

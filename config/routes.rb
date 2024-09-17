@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   end
 
   get '/search', to: 'search#search'
+  get '/current_user', to: 'search#current_user'
 end
