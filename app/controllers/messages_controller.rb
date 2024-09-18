@@ -3,10 +3,19 @@ class MessagesController < ApplicationController
 
   def create
     chatroom = Chatroom.find(params[:chatroom_id])
+    other_user = chatroom.exclude_current_user(current_user).first
     message = chatroom.messages.new(message_params.merge(user: current_user))
 
     if message.save
-      render json: message, status: :created
+      broadcast_data = {
+        id: message.id,
+        content: message.content,
+        user_id: current_user.id,
+        other_user_id: other_user&.id,
+        chatroom_id: chatroom.id
+      }
+      ActionCable.server.broadcast("chatroom_channel", broadcast_data)  
+      render json: broadcast_data, status: :created
     else
       render json: { errors: message.errors.full_messages }, status: :unprocessable_entity
     end

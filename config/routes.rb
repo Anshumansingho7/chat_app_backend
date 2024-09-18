@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
-
+  mount ActionCable.server => '/cable'
   resources :chatrooms, only: [:create, :index] do
     resources :messages, only: [:create]
   end
