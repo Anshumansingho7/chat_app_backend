@@ -23,7 +23,6 @@ class ChatroomsController < ApplicationController
     other_user = User.find(params[:user_id])
   
     if current_user == other_user
-      render json: { error: 'You cannot chat with yourself' }, status: :unprocessable_entity
       return
     end
   
@@ -65,7 +64,7 @@ class ChatroomsController < ApplicationController
           messages: []
         }, status: :created
       else
-        render json: { errors: chatroom.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: "There is an issue please try again later" }, status: :unprocessable_entity
       end
     end
   end

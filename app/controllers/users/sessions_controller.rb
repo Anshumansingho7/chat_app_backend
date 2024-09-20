@@ -12,8 +12,7 @@ class Users::SessionsController < Devise::SessionsController
       }, status: :ok
     else
       render json: {
-        status: 401,
-        message: 'Invalid username or password'
+        status: { code: 422, errors: "Invalid username or password" },
       }, status: :unauthorized
     end
   end
