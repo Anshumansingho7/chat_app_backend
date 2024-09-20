@@ -16,7 +16,6 @@ class SearchController < ApplicationController
       end
       render json: formatted_users
     else
-      render json: { error: "Search term is missing" }, status: :bad_request
     end
   end  
 
