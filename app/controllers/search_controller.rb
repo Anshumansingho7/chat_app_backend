@@ -38,7 +38,12 @@ class SearchController < ApplicationController
 
   def authenticate_user
     user = get_current_user_from_token
-    render json: { status: 401, message: "User has no active session" }, status: :unauthorized unless user
+    unless current_user
+      render json: {
+        status: 401,
+        message: "User has no active session"
+      }, status: :unauthorized    
+    end  
   end
 
   def get_current_user_from_token

@@ -25,7 +25,10 @@ class MessagesController < ApplicationController
 
   def authenticate_user
     unless current_user
-      render json: { status: 401, message: "User has no active session" }, status: :unauthorized
+      render json: {
+        status: 401,
+        message: "User has no active session"
+      }, status: :unauthorized    
     end
   end
 
