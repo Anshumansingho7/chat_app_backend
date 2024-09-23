@@ -50,5 +50,6 @@ gem 'devise-jwt'
 gem 'faker'
 
 
-gem "searchkick", "~> 5.4"
-gem "elasticsearch", "~> 8.15"
+gem "elasticsearch-rails", "~> 8.0"
+gem "elasticsearch-model", "~> 8.0"
+gem "elasticsearch-persistence", "~> 8.0"

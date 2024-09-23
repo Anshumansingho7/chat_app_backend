@@ -3,7 +3,16 @@ class SearchController < ApplicationController
 
   def search
     if params[:search].present?
-      users = User.search(params[:search], fields: [:username])
+      users = User.search({
+        query: {
+          multi_match: {
+            query: params[:search],
+            fields: ['username^3', 'email'], 
+            fuzziness: 'AUTO', 
+            operator: 'and' 
+          }
+        }
+      }).records
       formatted_users = users.results.map do |user|
         {
           chatroom_id: nil,

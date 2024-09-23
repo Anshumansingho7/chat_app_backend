@@ -115,24 +115,37 @@ GEM
       elasticsearch-api (= 8.15.0)
     elasticsearch-api (8.15.0)
       multi_json
+    elasticsearch-model (8.0.0)
+      activesupport (> 3)
+      elasticsearch (~> 8)
+      hashie
+    elasticsearch-persistence (8.0.0)
+      activemodel (> 4)
+      activesupport (> 4)
+      elasticsearch (~> 8)
+      elasticsearch-model (= 8)
+      hashie
+    elasticsearch-rails (8.0.0)
     erubi (1.13.0)
     faker (3.4.2)
       i18n (>= 1.8.11, < 2)
-    faraday (2.11.0)
+    faraday (2.12.0)
       faraday-net_http (>= 2.0, < 3.4)
+      json
       logger
     faraday-net_http (3.3.0)
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashie (5.0.0)
-    i18n (1.14.5)
+    i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
     irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    jwt (2.8.2)
+    json (2.7.2)
+    jwt (2.9.0)
       base64
     logger (1.6.1)
     loofah (2.22.0)
@@ -174,7 +187,7 @@ GEM
     orm_adapter (0.5.0)
     psych (5.1.2)
       stringio
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.7)
@@ -224,9 +237,6 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    searchkick (5.4.0)
-      activemodel (>= 6.1)
-      hashie
     sqlite3 (2.0.4-aarch64-linux-gnu)
     sqlite3 (2.0.4-aarch64-linux-musl)
     sqlite3 (2.0.4-arm-linux-gnu)
@@ -275,12 +285,13 @@ DEPENDENCIES
   debug
   devise
   devise-jwt
-  elasticsearch (~> 8.15)
+  elasticsearch-model (~> 8.0)
+  elasticsearch-persistence (~> 8.0)
+  elasticsearch-rails (~> 8.0)
   faker
   puma (>= 5.0)
   rack-cors
   rails (~> 7.1.4)
-  searchkick (~> 5.4)
   sqlite3 (>= 1.4)
   tzinfo-data
 
