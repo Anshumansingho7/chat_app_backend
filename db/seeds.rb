@@ -1,26 +1,29 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require 'securerandom'
 
-require 'faker'
+famous_names = [
+  "Peter Parker", "Tony Stark", "Steve Rogers", "Bruce Wayne", 
+  "Clark Kent", "Diana Prince", "Natasha Romanoff", "Bruce Banner", 
+  "Wanda Maximoff", "Stephen Strange"
+]
 
 n = 0
-1500.times do
+100.times do
+  # Randomly select a name from the famous_names array
+  name = famous_names.sample
+  first_name, last_name = name.split
+
+  # Append a random number to ensure uniqueness
+  unique_username = "#{first_name.downcase}_#{last_name.downcase}_#{rand(1000..9999)}"
+
   User.create!(
     email: Faker::Internet.unique.email,
-    username: Faker::Internet.unique.username,
-    password: 'password', # Dummy password
+    username: unique_username,
+    password: 'password',  # Dummy password
     password_confirmation: 'password',
     jti: SecureRandom.uuid
   )
   n += 1
-  puts "#{n}"  # String interpolation for proper output
+  puts "#{n} - #{unique_username} created!"  # Output with unique username
 end
 
-puts "1500 users created!"
+puts "100 unique famous users created!"

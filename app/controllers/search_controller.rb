@@ -3,17 +3,34 @@ class SearchController < ApplicationController
 
   def search
     if params[:search].present?
-      users = User.search({
+      query = {
         query: {
-          multi_match: {
-            query: params[:search],
-            fields: ['username^3', 'email'], 
-            fuzziness: 'AUTO', 
-            operator: 'and' 
+          bool: {
+            should: [
+              {
+                multi_match: {
+                  query: params[:search],
+                  fields: ['username^3'],
+                  fuzziness: 'AUTO',
+                  operator: 'and',
+                  prefix_length: 1
+                }
+              },
+              {
+                wildcard: {
+                  username: {
+                    value: "*#{params[:search].downcase}*", # Wildcard search
+                    boost: 2.0
+                  }
+                }
+              }
+            ]
           }
         }
-      }).records
-      formatted_users = users.results.map do |user|
+      }
+  
+      users = User.search(query).records
+      formatted_users = users.map do |user|
         {
           chatroom_id: nil,
           other_user: {
@@ -25,6 +42,7 @@ class SearchController < ApplicationController
       end
       render json: formatted_users
     else
+      render json: { error: "Search term missing" }, status: :bad_request
     end
   end  
 
