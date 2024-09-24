@@ -7,6 +7,7 @@ class MessagesController < ApplicationController
     message = chatroom.messages.new(message_params.merge(user: current_user))
 
     if message.save
+      chatroom.touch
       broadcast_data = {
         id: message.id,
         content: message.content,

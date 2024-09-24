@@ -2,7 +2,7 @@ class ChatroomsController < ApplicationController
   before_action :authenticate_user
 
   def index
-    chatrooms = current_user.chatrooms.includes(:users)
+    chatrooms = current_user.chatrooms.includes(:users).order(updated_at: :desc)
   
     chatrooms_json = chatrooms.map do |chatroom|
       other_user = chatroom.users.find { |user| user.id != current_user.id }
