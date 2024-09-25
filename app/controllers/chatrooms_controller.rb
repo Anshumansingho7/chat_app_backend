@@ -2,12 +2,22 @@ class ChatroomsController < ApplicationController
   before_action :authenticate_user
 
   def index
-    chatrooms = current_user.chatrooms.includes(:users).order(updated_at: :desc)
+    # Preload chatrooms ke saath users aur messages to avoid N+1 queries
+    chatrooms = current_user.chatrooms
+                            .includes(:users, messages: :user) # Preloading users and messages with their users
+                            .order(updated_at: :desc)
   
+    # Map through chatrooms with preloaded data
     chatrooms_json = chatrooms.map do |chatroom|
+      # Find other user without triggering an additional query
       other_user = chatroom.users.find { |user| user.id != current_user.id }
+  
+      # Use preloaded messages to calculate unread count, avoiding another query
+      unread_count = chatroom.messages.select { |message| message.user_id == other_user.id && !message.read }.count
+  
       {
         chatroom_id: chatroom.id,
+        unread_count: unread_count,
         other_user: {
           id: other_user.id,
           username: other_user.username,
@@ -17,7 +27,7 @@ class ChatroomsController < ApplicationController
     end
   
     render json: chatrooms_json
-  end
+  end  
   
   def create
     other_user = User.find(params[:user_id])
@@ -36,6 +46,7 @@ class ChatroomsController < ApplicationController
     if existing_chatroom
       messages = existing_chatroom.messages.select(:id, :user_id, :chatroom_id, :content)
       other_user = existing_chatroom.exclude_current_user(current_user).first
+      existing_chatroom.messages.where(user_id: other_user.id).update_all(read: true)
       render json: {
         chatroom: {
           chatroom_id: existing_chatroom.id,
