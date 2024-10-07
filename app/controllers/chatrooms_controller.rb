@@ -44,7 +44,12 @@ class ChatroomsController < ApplicationController
                                 .first
   
     if existing_chatroom
-      messages = existing_chatroom.messages.select(:id, :user_id, :chatroom_id, :content)
+      messages = existing_chatroom.messages
+             .select(:id, :user_id, :chatroom_id, :content)
+             .order(created_at: :desc) 
+             .limit(50)
+             .reverse 
+      total_pages = (existing_chatroom.messages.count / 50)
       other_user = existing_chatroom.exclude_current_user(current_user).first
       existing_chatroom.messages.where(user_id: other_user.id).update_all(read: true)
       render json: {
@@ -56,7 +61,12 @@ class ChatroomsController < ApplicationController
             email: other_user.email
           }
         },
-        messages: messages.as_json(only: [:id, :user_id, :chatroom_id, :content])
+        messages: messages.as_json(only: [:id, :user_id, :chatroom_id, :content]),
+        pagination: {
+          current_page: 0,
+          total_pages: total_pages,
+          next_page: 1
+        }
       }
     else
       chatroom = Chatroom.new

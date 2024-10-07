@@ -1,6 +1,25 @@
 class MessagesController < ApplicationController
   before_action :authenticate_user
 
+  def index
+    chatroom = Chatroom.find(params[:chatroom_id])
+  
+    total_pages = (chatroom.messages.count / 50) 
+    page = params[:page].to_i
+    offset = page * 50
+  
+    messages = chatroom.messages.order(created_at: :desc).offset(offset).limit(50).reverse
+  
+    render json: {
+      messages: messages.as_json(only: [:id, :user_id, :chatroom_id, :content]),
+      pagination: {
+        current_page: page,
+        total_pages: total_pages,
+        next_page: page + 1
+      }
+    }
+  end  
+
   def create
     chatroom = Chatroom.find(params[:chatroom_id])
     other_user = chatroom.exclude_current_user(current_user).first
